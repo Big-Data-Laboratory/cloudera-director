@@ -30,6 +30,9 @@ TRUSTSTORE_PASSWORD="Cloudera!"
 
 #### SCRIPT START ####
 
+# Set SELinux to permissive
+setenforce 0
+
 # Update DNS settings to point to the AD domain controller
 sed -e 's/PEERDNS\=\"yes\"/PEERDNS\=\"no\"/' -i /etc/sysconfig/network-scripts/ifcfg-eth0
 chattr -i /etc/resolv.conf
@@ -37,7 +40,7 @@ sed -e "s/nameserver .*/nameserver $NAMESERVER/" -i /etc/resolv.conf
 chattr +i /etc/resolv.conf
 
 # Install base packages
-yum install -y wget unzip krb5-workstation openldap-clients rng-tools
+yum install -y perl wget unzip krb5-workstation openldap-clients rng-tools
 
 # Enable and start rngd
 systemctl enable rngd
@@ -58,8 +61,8 @@ cp -f UnlimitedJCEPolicyJDK8/*.jar /usr/java/jdk1.8.0_60/jre/lib/security/
 rm -rf UnlimitedJCEPolicyJDK8*
 
 # Download and install the Centrify bits
-wget http://edge.centrify.com/products/centrify-suite/2015-update-1/installers/centrify-suite-2015.1-rhel4-x86_64.tgz
-tar xzf centrify-suite-2015.1-rhel4-x86_64.tgz
+wget http://edge.centrify.com/products/centrify-suite/2016/installers/20160315/centrify-suite-2016-rhel4-x86_64.tgz
+tar xzf centrify-suite-2016-rhel4-x86_64.tgz
 rpm -i ./*.rpm
 
 # If the Centrify packages didn't install, abort
